@@ -18,9 +18,8 @@ public class ObjectPool<T> {
     public T get() {
         if (!stack.isEmpty()) {
             hits++;
-            T obj = stack.pop();
-            Log.d(TAG, "ObjectPool[" + obj.getClass().getSimpleName() + "]" + " : hits = " + hits + " size = " + stack.size());
-            return obj;
+//            Log.d(TAG,  "hits = " + hits + " misses = " + misses + " size = " + stack.size());
+            return stack.pop();
         }
 
         misses++;

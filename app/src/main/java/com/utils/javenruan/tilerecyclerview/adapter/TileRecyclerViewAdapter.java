@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -40,6 +41,7 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
 
     private final Map<Integer, RowInfo> itemsPerRow = new HashMap<>();
     private ObjectPool<LinearLayout> linearLayoutPool = new ObjectPool<>();
+    private SparseArray<ObjectPool<VH>> viewHolderPoolMap = new SparseArray<>();
 
     public TileRecyclerViewAdapter(Context context, TileRecyclerView recyclerView, TileDataSourceAdapter<VH> dataSourceAdapter) {
         this.context = context;
@@ -59,10 +61,10 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        Log.e(TAG, "onCreateViewHolder");
         LinearLayout layout = new LinearLayout(context, null); // 横向的父亲Layout
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-        // 设置横向spacing，注意与recyclerView的horizontalSpacing相同大小
         layout.setDividerDrawable(horizontalDividerDrawable);
         AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(
                 AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
@@ -99,11 +101,26 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
                 // 处理业务界面
                 int actualIndex = currentItem.getIndex();
                 int viewType = innerAdapter.getItemViewType(actualIndex);
-                VH viewHolder = innerAdapter.onCreateViewHolder(recyclerView, viewType);
+                ObjectPool<VH> pool = viewHolderPoolMap.get(viewType);
+                if (pool == null) { // protect
+                    pool = new ObjectPool<>();
+                    viewHolderPoolMap.put(viewType, pool);
+                }
+                VH viewHolder = pool.get();
+                if (viewHolder == null) {
+                    viewHolder = innerAdapter.onCreateViewHolder(recyclerView, viewType);
+                }
                 innerAdapter.onBindViewHolder(viewHolder, actualIndex);
 
                 View view = viewHolder.itemView;
-                view.setTag(new ViewState(viewType, currentItem, viewHolder));
+                ViewState viewState;
+                if (view.getTag() != null) {
+                    viewState = (ViewState) view.getTag();
+                    viewState.set(viewType, currentItem, viewHolder);
+                } else {
+                    viewState = new ViewState(viewType, currentItem, viewHolder);
+                    view.setTag(viewState);
+                }
                 view.setOnClickListener(this);
                 view.setOnLongClickListener(this);
 
@@ -140,6 +157,18 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
         for (int i = 0;i < childCount;i++) {
             LinearLayout tempChild = (LinearLayout) layout.getChildAt(i);
             linearLayoutPool.put(tempChild);
+
+            int innerChildCount = tempChild.getChildCount();
+            for (int j = 0;j < innerChildCount;j++) {
+                View innerView = tempChild.getChildAt(j);
+                ViewState viewState = (ViewState) innerView.getTag();
+                ObjectPool<VH> pool = viewHolderPoolMap.get(viewState.viewType);
+                if (pool == null) {
+                    pool = new ObjectPool<>();
+                    viewHolderPoolMap.put(viewState.viewType, pool);
+                }
+                pool.put(viewState.viewHolder);
+            }
             tempChild.removeAllViews();
         }
         layout.removeAllViews();
@@ -154,13 +183,12 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
             childLayout = linearLayoutPool.get();
             if (childLayout == null) {
                 childLayout = new LinearLayout(context, null);
+                childLayout.setOrientation(LinearLayout.VERTICAL);
+                childLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+                childLayout.setDividerDrawable(verticalDividerDrawable);
+                childLayout.setLayoutParams(new AbsListView.LayoutParams(
+                        AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.MATCH_PARENT));
             }
-            childLayout.setOrientation(LinearLayout.VERTICAL);
-            childLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-            // 设置竖向spacing，注意与recyclerView的verticalSpacing相同大小
-            childLayout.setDividerDrawable(verticalDividerDrawable);
-            childLayout.setLayoutParams(new AbsListView.LayoutParams(
-                    AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.MATCH_PARENT));
 
             parent.addView(childLayout);
         }
@@ -168,12 +196,17 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
         return childLayout;
     }
 
-    private static class ViewState {
-        private final int viewType;
-        private final RowItem rowItem;
-        private final RecyclerView.ViewHolder viewHolder;
+    private class ViewState {
+        private int viewType;
+        private RowItem rowItem;
+        private VH viewHolder;
 
-        private ViewState(int viewType, RowItem rowItem, RecyclerView.ViewHolder viewHolder) {
+        private ViewState(int viewType, RowItem rowItem, VH viewHolder) {
+            set(viewType, rowItem, viewHolder);
+        }
+
+        public void set(int viewType, RowItem rowItem, VH viewHolder) {
+
             this.viewType = viewType;
             this.rowItem = rowItem;
             this.viewHolder = viewHolder;
