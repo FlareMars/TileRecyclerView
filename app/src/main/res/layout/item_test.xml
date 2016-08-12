@@ -1,0 +1,11 @@
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/text_view_background_selector"
+    android:gravity="center"
+    android:textColor="#fff"
+    android:drawablePadding="3dp"
+    android:drawableTop="@mipmap/ic_launcher"
+    android:textSize="18sp" />
