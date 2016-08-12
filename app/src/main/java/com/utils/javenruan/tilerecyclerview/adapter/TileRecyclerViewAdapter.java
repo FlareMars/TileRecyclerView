@@ -1,11 +1,7 @@
 package com.utils.javenruan.tilerecyclerview.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
-import com.utils.javenruan.tilerecyclerview.R;
+import com.utils.javenruan.tilerecyclerview.ObjectPool;
 import com.utils.javenruan.tilerecyclerview.TileRecyclerView;
 import com.utils.javenruan.tilerecyclerview.Utils;
 import com.utils.javenruan.tilerecyclerview.model.AbstractDataItem;
@@ -43,6 +39,7 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
     private GradientDrawable horizontalDividerDrawable;
 
     private final Map<Integer, RowInfo> itemsPerRow = new HashMap<>();
+    private ObjectPool<LinearLayout> linearLayoutPool = new ObjectPool<>();
 
     public TileRecyclerViewAdapter(Context context, TileRecyclerView recyclerView, TileDataSourceAdapter<VH> dataSourceAdapter) {
         this.context = context;
@@ -139,6 +136,12 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
     }
 
     private LinearLayout resetLayout(LinearLayout layout) {
+        int childCount = layout.getChildCount();
+        for (int i = 0;i < childCount;i++) {
+            LinearLayout tempChild = (LinearLayout) layout.getChildAt(i);
+            linearLayoutPool.put(tempChild);
+            tempChild.removeAllViews();
+        }
         layout.removeAllViews();
         return layout;
     }
@@ -148,7 +151,10 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
         LinearLayout childLayout = (LinearLayout) parent.getChildAt(columnIndex);
 
         if (childLayout == null) {
-            childLayout = new LinearLayout(context, null);
+            childLayout = linearLayoutPool.get();
+            if (childLayout == null) {
+                childLayout = new LinearLayout(context, null);
+            }
             childLayout.setOrientation(LinearLayout.VERTICAL);
             childLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
             // 设置竖向spacing，注意与recyclerView的verticalSpacing相同大小
@@ -183,6 +189,7 @@ public final class TileRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> e
     public void recalculateItemsPerRow() {
         long startTime = System.currentTimeMillis();
         itemsPerRow.clear();
+        linearLayoutPool.clear();
 
         List<RowItem> itemsWrapper = new ArrayList<>(getActualItemCount());
         for (int i = 0, size = getActualItemCount();i < size;i++) {
