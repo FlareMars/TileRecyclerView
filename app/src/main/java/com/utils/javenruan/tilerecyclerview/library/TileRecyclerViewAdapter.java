@@ -1,4 +1,4 @@
-package com.utils.javenruan.tilerecyclerview.adapter;
+package com.utils.javenruan.tilerecyclerview.library;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -10,13 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
-import com.utils.javenruan.tilerecyclerview.ObjectPool;
-import com.utils.javenruan.tilerecyclerview.TileRecyclerView;
 import com.utils.javenruan.tilerecyclerview.Utils;
-import com.utils.javenruan.tilerecyclerview.model.AbstractDataItem;
-import com.utils.javenruan.tilerecyclerview.model.RowInfo;
-import com.utils.javenruan.tilerecyclerview.model.RowItem;
-import com.utils.javenruan.tilerecyclerview.protocal.TileDataSourceAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.utils.javenruan.tilerecyclerview.model;
+package com.utils.javenruan.tilerecyclerview.library;
 
 /**
  * Created by javenruan on 2016/8/11

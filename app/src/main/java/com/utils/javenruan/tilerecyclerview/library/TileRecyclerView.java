@@ -1,4 +1,4 @@
-package com.utils.javenruan.tilerecyclerview;
+package com.utils.javenruan.tilerecyclerview.library;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -9,8 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Toast;
-
-import com.utils.javenruan.tilerecyclerview.adapter.TileRecyclerViewAdapter;
 
 /**
  * Created by javenruan on 2016/8/11

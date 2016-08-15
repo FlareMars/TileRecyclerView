@@ -1,8 +1,6 @@
-package com.utils.javenruan.tilerecyclerview.protocal;
+package com.utils.javenruan.tilerecyclerview.library;
 
 import android.support.v7.widget.RecyclerView;
-
-import com.utils.javenruan.tilerecyclerview.model.AbstractDataItem;
 
 /**
  * Created by javenruan on 2016/8/11

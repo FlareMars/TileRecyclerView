@@ -1,5 +1,7 @@
 package com.utils.javenruan.tilerecyclerview.model;
 
+import com.utils.javenruan.tilerecyclerview.library.AbstractDataItem;
+
 /**
  * Created by javenruan on 2016/8/11
  */

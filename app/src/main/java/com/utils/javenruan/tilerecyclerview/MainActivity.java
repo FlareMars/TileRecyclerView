@@ -10,7 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.utils.javenruan.tilerecyclerview.adapter.TestItemAdapter;
-import com.utils.javenruan.tilerecyclerview.adapter.TileRecyclerViewAdapter;
+import com.utils.javenruan.tilerecyclerview.library.TileRecyclerView;
+import com.utils.javenruan.tilerecyclerview.library.TileRecyclerViewAdapter;
 import com.utils.javenruan.tilerecyclerview.model.ModelUtils;
 
 public class MainActivity extends AppCompatActivity {

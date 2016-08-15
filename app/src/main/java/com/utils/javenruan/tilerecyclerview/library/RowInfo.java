@@ -1,4 +1,4 @@
-package com.utils.javenruan.tilerecyclerview.model;
+package com.utils.javenruan.tilerecyclerview.library;
 
 import java.util.List;
 

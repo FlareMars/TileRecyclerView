@@ -1,16 +1,15 @@
 package com.utils.javenruan.tilerecyclerview.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.utils.javenruan.tilerecyclerview.R;
-import com.utils.javenruan.tilerecyclerview.model.AbstractDataItem;
+import com.utils.javenruan.tilerecyclerview.library.AbstractDataItem;
 import com.utils.javenruan.tilerecyclerview.model.TestItem;
-import com.utils.javenruan.tilerecyclerview.protocal.TileDataSourceAdapter;
+import com.utils.javenruan.tilerecyclerview.library.TileDataSourceAdapter;
 
 import java.util.List;
 

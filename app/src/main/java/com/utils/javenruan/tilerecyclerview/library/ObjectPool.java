@@ -1,4 +1,4 @@
-package com.utils.javenruan.tilerecyclerview;
+package com.utils.javenruan.tilerecyclerview.library;
 
 import android.util.Log;
 
@@ -18,7 +18,7 @@ public class ObjectPool<T> {
     public T get() {
         if (!stack.isEmpty()) {
             hits++;
-//            Log.d(TAG,  "hits = " + hits + " misses = " + misses + " size = " + stack.size());
+            Log.d(TAG,  "hits = " + hits + " misses = " + misses + " size = " + stack.size());
             return stack.pop();
         }
 

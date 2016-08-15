@@ -1,4 +1,4 @@
-package com.utils.javenruan.tilerecyclerview.model;
+package com.utils.javenruan.tilerecyclerview.library;
 
 public final class RowItem {
         private final AbstractDataItem item;

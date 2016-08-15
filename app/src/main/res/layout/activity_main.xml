@@ -27,7 +27,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <com.utils.javenruan.tilerecyclerview.TileRecyclerView
+        <com.utils.javenruan.tilerecyclerview.library.TileRecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
